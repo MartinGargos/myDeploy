@@ -1,7 +1,7 @@
 #!/bin/bash
 ENV=$1
 
-# Mapování prostředí na větev
+# Mapování prostředí
 case $ENV in
   DEV)   BRANCH="dev"   ;;
   STAGE) BRANCH="stage" ;;
@@ -14,22 +14,21 @@ TMP_DIR="/tmp/myApp"
 rm -rf "$TMP_DIR"
 mkdir -p "$TMP_DIR"
 
-# Klonuj veřejné repo – žádný token!
+# Klonuj PUBLIC repo
 git clone https://github.com/martincarpos/myApp.git "$TMP_DIR"
 cd "$TMP_DIR" || exit 1
 
-# Stáhni tagy
-git fetch origin "$BRANCH" --tags 2>/dev/null || true
+# Stáhni tagy z větve
+git fetch origin "$BRANCH" --tags
 
-# Najdi poslední tag
+# Najdi poslední tag myApp/*
 TAG=$(git for-each-ref --sort=-version:refname --format='%(refname:short)' "refs/tags/myApp/*" | head -1)
 
 if [ -z "$TAG" ]; then
-  echo "Žádný tag nenalezen na větvi $BRANCH" >&2
+  echo "Žádný tag na větvi $BRANCH" >&2
   exit 1
 fi
 
 # Odstraň prefix
 BUILD_ID=$(echo "$TAG" | sed 's/^myApp\///')
-
 echo "myApp:$BUILD_ID"
