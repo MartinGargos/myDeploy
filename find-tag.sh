@@ -14,14 +14,14 @@ TMP_DIR="/tmp/myApp"
 rm -rf "$TMP_DIR"
 mkdir -p "$TMP_DIR"
 
-# Klonuj myApp repo
+# Klonuj veřejné repo – žádný token!
 git clone https://github.com/martincarpos/myApp.git "$TMP_DIR"
 cd "$TMP_DIR" || exit 1
 
-# Stáhni tagy z dané větve
+# Stáhni tagy
 git fetch origin "$BRANCH" --tags 2>/dev/null || true
 
-# Najdi poslední tag ve formátu myApp/*
+# Najdi poslední tag
 TAG=$(git for-each-ref --sort=-version:refname --format='%(refname:short)' "refs/tags/myApp/*" | head -1)
 
 if [ -z "$TAG" ]; then
@@ -29,7 +29,7 @@ if [ -z "$TAG" ]; then
   exit 1
 fi
 
-# Odstraň prefix myApp/
+# Odstraň prefix
 BUILD_ID=$(echo "$TAG" | sed 's/^myApp\///')
 
 echo "myApp:$BUILD_ID"
