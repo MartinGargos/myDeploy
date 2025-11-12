@@ -1,0 +1,24 @@
+name: CD - Deploy to DEV
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout myDeploy
+        uses: actions/checkout@v4
+
+      - name: Find latest tag from myApp
+        id: tag
+        run: |
+          IMAGE=$(./find-tag.sh DEV)
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
+
+      - name: Simulate deploy
+        run: |
+          echo "=== DEPLOY DO DEV ==="
+          echo "Nasazuji: ${{ steps.tag.outputs.image }}"
+          echo "kubectl set image deployment/myapp myapp=${{ steps.tag.outputs.image }} --record"
