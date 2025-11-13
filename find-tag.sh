@@ -15,7 +15,7 @@ rm -rf "$TMP_DIR"
 mkdir -p "$TMP_DIR"
 
 # Klonuj PUBLIC repo
-git clone https://github.com/martincarpos/myApp.git "$TMP_DIR"
+git clone https://github.com/martingargos/myApp.git "$TMP_DIR"
 cd "$TMP_DIR" || exit 1
 
 # Stáhni tagy z větve
