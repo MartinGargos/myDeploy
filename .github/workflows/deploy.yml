@@ -3,6 +3,7 @@ name: CD - Deploy to DEV
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   deploy:
