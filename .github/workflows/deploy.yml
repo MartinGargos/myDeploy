@@ -1,25 +1,31 @@
-name: CD - Deploy to DEV
+name: CD - Deploy
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Choose environment"
+        type: choice
+        options:
+          - DEV
+          - TEST
+          - STAGE
+          - PROD
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout myDeploy
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Find latest tag from myApp
+      - name: Get latest tag
         id: tag
         run: |
-          IMAGE=$(./find-tag.sh DEV)
+          ENV=${{ github.event.inputs.environment }}
+          IMAGE=$(./find-tag.sh "$ENV")
           echo "image=$IMAGE" >> $GITHUB_OUTPUT
 
-      - name: Simulate deploy
+      - name: Deploy
         run: |
-          echo "=== DEPLOY DO DEV ==="
-          echo "Nasazuji: ${{ steps.tag.outputs.image }}"
-          echo "kubectl set image deployment/myapp myapp=${{ steps.tag.outputs.image }} --record"
+          echo "Deploying to ${{ github.event.inputs.environment }}"
+          echo "Image: ${{ steps.tag.outputs.image }}"
